@@ -56,7 +56,12 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
     if(route == null ) throw ArgumentError('route not is null');
     if(observer._PAGE_NAME != null) return;
     if(route?.settings?.name == null ) throw ArgumentError('Route name not is null');
-    observer._PAGE_NAME = route?.settings?.name;
+    String name = route?.settings?.name;
+
+    if(appRouteNames.contains(name)) {
+      name = name + DateTime.now().toString();
+    }
+    observer._PAGE_NAME = name;
     _observers.add(observer);
   }
 
