@@ -30,7 +30,7 @@
 
    import 'package:page_life_cycle/page_life_cycle.dart' show PageNavigatorObserver;
 
-   PageNavigatorObserver pageNavigatorObserver = PageNavigatorObserver();
+   PageLifeCycleObserver lifeCycle = PageLifeCycleObserver();
   
 
   class VideoWidgetState extends State<VideoWidget>
@@ -38,13 +38,13 @@
         @override
         void didChangeDependencies() {
             super.didChangeDependencies();
-            pageNavigatorObserver.addPageLifeCycleObserver(this, ModalRoute.of(context));
+            lifeCycle.addPageLifeCycleObserver(this, ModalRoute.of(context));
         }
 
         @override
         void dispose() {
             super.dispose();
-            pageNavigatorObserver.removePageLifeCycleObserver(this);
+            lifeCycle.removePageLifeCycleObserver(this);
         }
     }
     // 路由显示触发

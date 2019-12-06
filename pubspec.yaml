@@ -1,8 +1,8 @@
 name: page_life_cycle
-description: A new Flutter package project.
-version: 0.0.1
-author:
-homepage:
+description: Because the widget of the flitter does not route the Onshow and onhide events, the Onshow and onhide events of the widget are added according to the routing changes. 
+version: 1.0.4
+# author:
+homepage: https://github.com/hjc22/page_life_cycle
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
