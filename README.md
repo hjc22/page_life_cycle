@@ -23,12 +23,12 @@
 ```
 
 ### 页面内使用
-### one
+
 
 ```
    main.dart
 
-   import 'package:page_life_cycle/page_life_cycle.dart' show PageNavigatorObserver;
+   import 'package:page_life_cycle/page_life_cycle.dart' show PageLifeCycleObserver;
 
    PageLifeCycleObserver lifeCycle = PageLifeCycleObserver();
   
