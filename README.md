@@ -28,7 +28,7 @@
 ```
    main.dart
 
-   import 'package:page_life_cycle/page_life_cycle.dart' show PageLifeCycleObserver;
+   import 'package:page_life_cycle/page_life_cycle.dart' show PageLifeCycleObserver, PageLifeCycle;
 
    PageLifeCycleObserver lifeCycle = PageLifeCycleObserver();
   

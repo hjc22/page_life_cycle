@@ -1,0 +1,46 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+def flutterProjectRoot = rootProject.projectDir.parentFile.toPath()
+def plugins = new Properties()
+def pluginsFile = new File(flutterProjectRoot.toFile(), '.flutter-plugins')
+if (pluginsFile.exists()) {
+    pluginsFile.withReader('UTF-8') { reader -> plugins.load(reader) }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        flatDir {
+            dirs "${plugins.get("tencent_native_video")}android/libs"
+        }
+    }
+}

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 
 class PageLifeCycleObserver extends WidgetsBindingObserver {
   // route name
-  List<String> appRouteNames = [];
+  List<int> appRouteNames = [];
+
+
   // 生命周期监控
   List<PageLifeCycle> _observers = [];
   // 缓存上一次的app状态
@@ -22,47 +24,51 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
   //工厂构造函数
   factory PageLifeCycleObserver() => _singleton;
 
-  void addRouteName(String name) {
+  void addRouteName(int route) {
     if (appRouteNames.isNotEmpty) {
-      String hideName = appRouteNames.last;
+
+      int hideName = appRouteNames.last;
       _observers
-          .where((PageLifeCycle item) => item._pageRouteName == hideName)
+          .where((PageLifeCycle item) => item._pageRouteHashCode == hideName)
           ?.forEach((PageLifeCycle item) => item.onHide());
     }
-    appRouteNames.add(name);
+    appRouteNames.add(route);
   }
+  
 
-  void removeRouteName(String name, {String type}) {
+  void removeRouteName(int route, {String type}) {
+
     if (type == 'remove') {
-      var index = appRouteNames.indexWhere((String v) => v == name);
+      var index = appRouteNames.lastIndexWhere((int v) => v == route);
       if (index != -1) {
         appRouteNames.removeAt(index);
       }
-    } else {
-      appRouteNames.removeWhere((String v) => v == name);
     }
     if (appRouteNames.isNotEmpty) {
-      String showName = appRouteNames.last;
+      int showName = appRouteNames.last;
+      Future.delayed(Duration.zero).then((_) {
       if (showName != null) {
         _observers
-            .where((PageLifeCycle item) => item._pageRouteName == showName)
-            ?.forEach((PageLifeCycle item) => item.onShow());
+            .where((PageLifeCycle item) => item._pageRouteHashCode == showName)
+            ?.forEach((PageLifeCycle item) {
+              if(appRouteNames.lastIndexOf(item._pageRouteHashCode) != -1) {
+                item?.onShow();
+              }
+              });
       }
+      });
     }
   }
 
   void addPageLifeCycleObserver(PageLifeCycle observer, Route route) {
     if (observer == null) throw ArgumentError('observer not is null');
     if (route == null) throw ArgumentError('route not is null');
-    if (observer._pageRouteName != null) return;
+    if (observer._pageRouteHashCode != null) return;
     if (route?.settings?.name == null)
       throw ArgumentError('Route name not is null');
-    String name = route?.settings?.name;
 
-    if (appRouteNames.contains(name)) {
-      name = name + DateTime.now().toString();
-    }
-    observer._pageRouteName = name;
+    observer._pageRouteHashCode = route.hashCode;
+    
     _observers.add(observer);
   }
 
@@ -71,10 +77,10 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
   }
 
   bool getIsTopRoute(PageLifeCycle observer) {
-    if (observer._pageRouteName == null)
+    if (observer._pageRouteHashCode == null)
       throw ArgumentError('widget is no addObserver');
     return appRouteNames.isNotEmpty
-        ? appRouteNames.last == observer._pageRouteName
+        ? appRouteNames.last == observer._pageRouteHashCode
         : true;
   }
 
@@ -87,10 +93,10 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
       case AppLifecycleState.resumed:
         _appLifecycleState = AppLifecycleState.resumed;
         if (appRouteNames.isNotEmpty) {
-          String showName = appRouteNames.last;
+          int showName = appRouteNames.last;
           if (showName != null) {
             _observers
-                .where((PageLifeCycle item) => item._pageRouteName == showName)
+                .where((PageLifeCycle item) => item._pageRouteHashCode == showName)
                 ?.forEach((PageLifeCycle item) => item.onAppForeground());
           }
         }
@@ -101,11 +107,11 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
       case AppLifecycleState.inactive:
         if (_appLifecycleState == AppLifecycleState.resumed) {
           if (appRouteNames.isNotEmpty) {
-            String showName = appRouteNames.last;
+            int showName = appRouteNames.last;
             if (showName != null) {
               _observers
                   .where(
-                      (PageLifeCycle item) => item._pageRouteName == showName)
+                      (PageLifeCycle item) => item._pageRouteHashCode == showName)
                   ?.forEach((PageLifeCycle item) => item.onAppBackground());
             }
           }
@@ -126,7 +132,7 @@ class PageNavigatorObserver extends NavigatorObserver {
     super.didPush(route, previousRoute);
     String name = route.settings?.name;
     if (name != null) {
-      pageObserver.addRouteName(name);
+      pageObserver.addRouteName(route.hashCode.hashCode);
     }
   }
 
@@ -134,9 +140,14 @@ class PageNavigatorObserver extends NavigatorObserver {
   @override
   void didPop(Route route, Route previousRoute) {
     super.didPop(route, previousRoute);
+    
     String name = route.settings?.name;
+
     if (name != null) {
-      pageObserver.removeRouteName(name);
+      pageObserver.appRouteNames.removeWhere((int v) {
+        return v == route.hashCode;
+      });
+      pageObserver.removeRouteName(route.hashCode);
     }
   }
 
@@ -147,7 +158,7 @@ class PageNavigatorObserver extends NavigatorObserver {
     super.didRemove(route, previousRoute);
     String removeName = route.settings?.name;
     if (removeName != null) {
-      pageObserver.removeRouteName(removeName, type: 'remove');
+      pageObserver.removeRouteName(route.hashCode, type: 'remove');
     }
   }
 
@@ -158,18 +169,18 @@ class PageNavigatorObserver extends NavigatorObserver {
     String oldName = oldRoute?.settings?.name;
     String newName = newRoute?.settings?.name;
 
-    if (oldName == newName) {
-      if (!pageObserver.appRouteNames.contains(oldName)) {
-        pageObserver.addRouteName(oldName);
-      }
-      return;
-    }
-
+//    if (oldName == newName) {
+//      if (!pageObserver.appRouteNames.contains(oldName)) {
+//        pageObserver.addRouteName(oldName);
+//      }
+//      return;
+//    }
+    
     if (oldName != null) {
-      pageObserver.removeRouteName(oldName);
+      pageObserver.removeRouteName(oldRoute.hashCode);
     }
     if (newName != null) {
-      pageObserver.addRouteName(newName);
+      pageObserver.addRouteName(newRoute.hashCode);
     }
   }
 
@@ -190,7 +201,7 @@ abstract class PageLifeCycle {
   //不支持没有名称的路由，过滤popupRoute
 
   // 当前widget 所在的路由名称  ModelRoute.of(context).setting.name;
-  String _pageRouteName;
+  int _pageRouteHashCode;
 
   // 从一个PageRoute路由回到当前widget 所在的路由时候的回调  首次加载不触发
   void onShow() {}
