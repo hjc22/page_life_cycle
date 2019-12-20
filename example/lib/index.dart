@@ -43,6 +43,10 @@ class IndexState extends State<Index> with PageLifeCycle {
       backgroundColor: Colors.white,
       body: CupertinoButton(
         onPressed: () {
+
+//          showDialog(context: context, builder: (c) {
+//             return Text('2134142');
+//          });
           Navigator.of(context).pushNamed('/login');
         },
         child: Text('去下个页面'),
