@@ -44,6 +44,11 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
         appRouteNames.removeAt(index);
       }
     }
+    else {
+      appRouteNames.removeWhere((int v) {
+        return v == route;
+      });
+    }
     if (appRouteNames.isNotEmpty) {
       int showName = appRouteNames.last;
       Future.delayed(Duration.zero).then((_) {
@@ -130,9 +135,9 @@ class PageNavigatorObserver extends NavigatorObserver {
   @override
   void didPush(Route route, Route previousRoute) {
     super.didPush(route, previousRoute);
-    String name = route.settings?.name;
-    if (name != null) {
-      pageObserver.addRouteName(route.hashCode.hashCode);
+
+    if (route is! PopupRoute) {
+      pageObserver.addRouteName(route.hashCode);
     }
   }
 
@@ -143,10 +148,7 @@ class PageNavigatorObserver extends NavigatorObserver {
     
     String name = route.settings?.name;
 
-    if (name != null) {
-      pageObserver.appRouteNames.removeWhere((int v) {
-        return v == route.hashCode;
-      });
+    if (route is! PopupRoute) {
       pageObserver.removeRouteName(route.hashCode);
     }
   }
@@ -156,8 +158,8 @@ class PageNavigatorObserver extends NavigatorObserver {
   void didRemove(Route route, Route previousRoute) {
     // TODO: implement didRemove
     super.didRemove(route, previousRoute);
-    String removeName = route.settings?.name;
-    if (removeName != null) {
+
+    if (route is! PopupRoute) {
       pageObserver.removeRouteName(route.hashCode, type: 'remove');
     }
   }
@@ -166,20 +168,11 @@ class PageNavigatorObserver extends NavigatorObserver {
   void didReplace({Route newRoute, Route oldRoute}) {
     // TODO: implement didReplace
     super.didReplace();
-    String oldName = oldRoute?.settings?.name;
-    String newName = newRoute?.settings?.name;
-
-//    if (oldName == newName) {
-//      if (!pageObserver.appRouteNames.contains(oldName)) {
-//        pageObserver.addRouteName(oldName);
-//      }
-//      return;
-//    }
     
-    if (oldName != null) {
+    if (oldRoute is! PopupRoute) {
       pageObserver.removeRouteName(oldRoute.hashCode);
     }
-    if (newName != null) {
+    if (newRoute is! PopupRoute) {
       pageObserver.addRouteName(newRoute.hashCode);
     }
   }
