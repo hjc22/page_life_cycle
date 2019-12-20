@@ -1,9 +1,6 @@
-import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:page_life_cycle/page_life_cycle.dart';
-
-PageLifeCycleObserver life = PageLifeCycleObserver();
 
 const Color bgColor = const Color(0xff141A27);
 
@@ -18,31 +15,22 @@ class IndexState extends State<Index> with PageLifeCycle {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    life.addPageLifeCycleObserver(this, ModalRoute.of(context));
-  }
   String _text = '';
-
-
 
   @override
   void onHide() {
     // TODO: implement onHide
     super.onHide();
-    print('onHide');
+    print('$this onHide');
   }
+
   @override
   void onShow() {
     // TODO: implement onHide
     super.onShow();
-    print('onShow');
+    print('$this onShow');
   }
 
   @override
@@ -64,10 +52,5 @@ class IndexState extends State<Index> with PageLifeCycle {
         child: Text('去下个页面'),
       ),
     );
-  }
-
-  dispose() {
-    super.dispose();
-    life.removePageLifeCycleObserver(this);
   }
 }

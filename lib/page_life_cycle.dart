@@ -6,7 +6,6 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
   // route name
   List<int> appRouteNames = [];
 
-
   // 生命周期监控
   List<PageLifeCycle> _observers = [];
   // 缓存上一次的app状态
@@ -26,7 +25,6 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
 
   void addRouteName(int route) {
     if (appRouteNames.isNotEmpty) {
-
       int hideName = appRouteNames.last;
       _observers
           .where((PageLifeCycle item) => item._pageRouteHashCode == hideName)
@@ -34,10 +32,8 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
     }
     appRouteNames.add(route);
   }
-  
 
   void removeRouteName(int route, {String type}) {
-
     if (type == 'remove') {
       var index = appRouteNames.lastIndexWhere((int v) => v == route);
       if (index != -1) {
@@ -52,15 +48,16 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
     if (appRouteNames.isNotEmpty) {
       int showName = appRouteNames.last;
       Future.delayed(Duration.zero).then((_) {
-      if (showName != null) {
-        _observers
-            .where((PageLifeCycle item) => item._pageRouteHashCode == showName)
-            ?.forEach((PageLifeCycle item) {
-              if(appRouteNames.lastIndexOf(item._pageRouteHashCode) != -1) {
-                item?.onShow();
-              }
-              });
-      }
+        if (showName != null) {
+          _observers
+              .where(
+                  (PageLifeCycle item) => item._pageRouteHashCode == showName)
+              ?.forEach((PageLifeCycle item) {
+            if (appRouteNames.lastIndexOf(item._pageRouteHashCode) != -1) {
+              item?.onShow();
+            }
+          });
+        }
       });
     }
   }
@@ -73,7 +70,7 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
       throw ArgumentError('Route name not is null');
 
     observer._pageRouteHashCode = route.hashCode;
-    
+
     _observers.add(observer);
   }
 
@@ -101,7 +98,8 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
           int showName = appRouteNames.last;
           if (showName != null) {
             _observers
-                .where((PageLifeCycle item) => item._pageRouteHashCode == showName)
+                .where(
+                    (PageLifeCycle item) => item._pageRouteHashCode == showName)
                 ?.forEach((PageLifeCycle item) => item.onAppForeground());
           }
         }
@@ -115,8 +113,8 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
             int showName = appRouteNames.last;
             if (showName != null) {
               _observers
-                  .where(
-                      (PageLifeCycle item) => item._pageRouteHashCode == showName)
+                  .where((PageLifeCycle item) =>
+                      item._pageRouteHashCode == showName)
                   ?.forEach((PageLifeCycle item) => item.onAppBackground());
             }
           }
@@ -145,7 +143,7 @@ class PageNavigatorObserver extends NavigatorObserver {
   @override
   void didPop(Route route, Route previousRoute) {
     super.didPop(route, previousRoute);
-    
+
     String name = route.settings?.name;
 
     if (route is! PopupRoute) {
@@ -190,7 +188,21 @@ class PageNavigatorObserver extends NavigatorObserver {
 //  }
 }
 
-abstract class PageLifeCycle {
+mixin PageLifeCycle<T extends StatefulWidget> on State<T> {
+  final life = PageLifeCycleObserver();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    life.addPageLifeCycleObserver(this, ModalRoute.of(context));
+  }
+
+  @override
+  void dispose() {
+    life.removePageLifeCycleObserver(this);
+    super.dispose();
+  }
+
   //不支持没有名称的路由，过滤popupRoute
 
   // 当前widget 所在的路由名称  ModelRoute.of(context).setting.name;
