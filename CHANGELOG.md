@@ -21,3 +21,7 @@
  ## [1.0.8] - TODO: Add release date.
 
 * TODO: support no route name.
+
+ ## [1.1.0] - TODO: Add release date.
+
+* TODO: Remove manual add listening.

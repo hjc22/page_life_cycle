@@ -39,8 +39,7 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
       if (index != -1) {
         appRouteNames.removeAt(index);
       }
-    }
-    else {
+    } else {
       appRouteNames.removeWhere((int v) {
         return v == route;
       });
@@ -88,7 +87,6 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // TODO: implement didChangeAppLifecycleState
     super.didChangeAppLifecycleState(state);
 
     switch (state) {
@@ -126,7 +124,7 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
   }
 }
 
-// 监听路由变化从视频播放页跳到新的页面 触发videoPagePush事件,从而暂停视频和进度条
+// 监听路由变化
 class PageNavigatorObserver extends NavigatorObserver {
   PageLifeCycleObserver pageObserver = PageLifeCycleObserver();
   // 路由push事件
@@ -154,7 +152,6 @@ class PageNavigatorObserver extends NavigatorObserver {
   // 路由销毁事件
   @override
   void didRemove(Route route, Route previousRoute) {
-    // TODO: implement didRemove
     super.didRemove(route, previousRoute);
 
     if (route is! PopupRoute) {
@@ -164,9 +161,8 @@ class PageNavigatorObserver extends NavigatorObserver {
 
   @override
   void didReplace({Route newRoute, Route oldRoute}) {
-    // TODO: implement didReplace
     super.didReplace();
-    
+
     if (oldRoute is! PopupRoute) {
       pageObserver.removeRouteName(oldRoute.hashCode);
     }
@@ -203,14 +199,11 @@ mixin PageLifeCycle<T extends StatefulWidget> on State<T> {
     super.dispose();
   }
 
-  //不支持没有名称的路由，过滤popupRoute
-
-  // 当前widget 所在的路由名称  ModelRoute.of(context).setting.name;
+  // 路由hashcode
   int _pageRouteHashCode;
-
   // 从一个PageRoute路由回到当前widget 所在的路由时候的回调  首次加载不触发
   void onShow() {}
-  // 当前widget 所在的路由push一个PageRoute路由时的回调
+  // 当前widget 所在的路由push一个PageRoute路由时的回调，dispose时不触发
   void onHide() {}
   // 触发app 后台 回调
   void onAppBackground() {}

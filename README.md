@@ -26,24 +26,12 @@
 ```
    main.dart
 
-   import 'package:page_life_cycle/page_life_cycle.dart' show PageLifeCycleObserver, PageLifeCycle;
+   import 'package:page_life_cycle/page_life_cycle.dart' show PageLifeCycle;
 
-   PageLifeCycleObserver lifeCycle = PageLifeCycleObserver();
-  
+
 
   class VideoWidgetState extends State<VideoWidget>
     with PageLifeCycle  {
-        @override
-        void didChangeDependencies() {
-            super.didChangeDependencies();
-            lifeCycle.addPageLifeCycleObserver(this, ModalRoute.of(context));
-        }
-
-        @override
-        void dispose() {
-            super.dispose();
-            lifeCycle.removePageLifeCycleObserver(this);
-        }
     // 路由显示触发
     @override
     void onShow () {
@@ -66,7 +54,7 @@
 
     }
     // 判断是否是顶层路由 会过滤没有name的route 和 modelPopupRoute 需要在addPageLifeCycleObserver方法后调用
-    bool getIsTopRoute => pageNavigatorObserver.getIsTopRoute(this)
+    bool getIsTopRoute => PageLifeCycleObserver().getIsTopRoute(this)
 
    }
 
