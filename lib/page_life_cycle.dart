@@ -91,7 +91,6 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
 
     switch (state) {
       case AppLifecycleState.resumed:
-        _appLifecycleState = AppLifecycleState.resumed;
         if (appRouteNames.isNotEmpty) {
           int showName = appRouteNames.last;
           if (showName != null) {
@@ -103,18 +102,13 @@ class PageLifeCycleObserver extends WidgetsBindingObserver {
         }
         break;
       case AppLifecycleState.paused:
-        _appLifecycleState = AppLifecycleState.paused;
-        break;
-      case AppLifecycleState.inactive:
-        if (_appLifecycleState == AppLifecycleState.resumed) {
-          if (appRouteNames.isNotEmpty) {
-            int showName = appRouteNames.last;
-            if (showName != null) {
-              _observers
-                  .where((PageLifeCycle item) =>
-                      item._pageRouteHashCode == showName)
-                  ?.forEach((PageLifeCycle item) => item.onAppBackground());
-            }
+        if (appRouteNames.isNotEmpty) {
+          int showName = appRouteNames.last;
+          if (showName != null) {
+            _observers
+                .where((PageLifeCycle item) =>
+            item._pageRouteHashCode == showName)
+                ?.forEach((PageLifeCycle item) => item.onAppBackground());
           }
         }
         break;

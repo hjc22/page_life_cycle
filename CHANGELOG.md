@@ -1,9 +1,19 @@
 
+  ## [1.1.1] - TODO: 2019-12-24.
 
-## [1.0.0] - fix readme.md.
+* TODO: fix onAppBackground.
+ 
+ ## [1.1.0] - TODO: Add release date.
 
-* fix readme.md.
+* TODO: Remove manual add listening.
 
+## [1.0.8] - TODO: Add release date.
+
+* TODO: support no route name.
+
+ ## [1.0.6] - TODO: Add release date.
+
+* TODO: Describe initial release.
 
 ## [1.0.2] - fix readme.md.
 
@@ -14,14 +24,8 @@
 * TODO: Describe initial release. 
 
 
- ## [1.0.6] - TODO: Add release date.
+## [1.0.0] - fix readme.md.
 
-* TODO: Describe initial release.
+* fix readme.md.
+ 
 
- ## [1.0.8] - TODO: Add release date.
-
-* TODO: support no route name.
-
- ## [1.1.0] - TODO: Add release date.
-
-* TODO: Remove manual add listening.

@@ -34,6 +34,21 @@ class IndexState extends State<Index> with PageLifeCycle {
   }
 
   @override
+  void onAppBackground() {
+    // TODO: implement onAppBackground
+    super.onAppBackground();
+
+    print('onAppBackground');
+  }
+
+  @override
+  void onAppForeground() {
+    // TODO: implement onAppForeground
+    super.onAppForeground();
+    print('onAppForeground');
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
